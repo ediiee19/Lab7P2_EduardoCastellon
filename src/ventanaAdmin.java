@@ -1,32 +1,42 @@
 
+import com.sun.java.accessibility.util.EventID;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.management.Query;
+import javax.management.modelmbean.ModelMBean;
 import javax.print.event.PrintJobEvent;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
 public class ventanaAdmin extends javax.swing.JFrame {
 
+    DefaultTableModel modeloTable;
+
     public ventanaAdmin() {
         initComponents();
 
         this.setLocationRelativeTo(null);
+        modeloTable = (DefaultTableModel) this.jTable1.getModel();
     }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        PM_opc = new javax.swing.JPopupMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
         PN_principal = new javax.swing.JPanel();
         LB_enterbutton1 = new javax.swing.JLabel();
         LB_enterbutton = new javax.swing.JLabel();
@@ -41,11 +51,19 @@ public class ventanaAdmin extends javax.swing.JFrame {
         MI_newFile = new javax.swing.JMenuItem();
         MI_ImportFile = new javax.swing.JMenuItem();
         MB_window = new javax.swing.JMenu();
+        MB_clear = new javax.swing.JMenu();
         MI_clearLine = new javax.swing.JMenuItem();
         MI_clearTable = new javax.swing.JMenuItem();
+        MI_RefreshTree = new javax.swing.JMenuItem();
         MB_help = new javax.swing.JMenu();
         MI_prodInfo = new javax.swing.JMenuItem();
         MI_commandInfo = new javax.swing.JMenuItem();
+
+        jMenuItem1.setText("jMenuItem1");
+        PM_opc.add(jMenuItem1);
+
+        jMenuItem2.setText("jMenuItem2");
+        PM_opc.add(jMenuItem2);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -75,19 +93,14 @@ public class ventanaAdmin extends javax.swing.JFrame {
             }
         });
         PN_principal.add(LB_enterbutton, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 10, 120, 50));
-
-        TF_comandText.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                TF_comandTextKeyPressed(evt);
-            }
-        });
         PN_principal.add(TF_comandText, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 10, 740, 50));
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 204));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("root");
+        javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("CSV.Se");
         JT_arhcivos.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
+        JT_arhcivos.setToolTipText("");
         jScrollPane1.setViewportView(JT_arhcivos);
 
         jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(19, 66, 180, 480));
@@ -207,6 +220,10 @@ public class ventanaAdmin extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
+        jTable1.setToolTipText("");
+        jTable1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jTable1.setShowGrid(true);
+        jTable1.setShowVerticalLines(false);
         jScrollPane2.setViewportView(jTable1);
 
         jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(236, 66, 652, -1));
@@ -214,6 +231,11 @@ public class ventanaAdmin extends javax.swing.JFrame {
         PN_principal.add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 910, 530));
 
         MB_File.setText("File");
+        MB_File.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MB_FileActionPerformed(evt);
+            }
+        });
 
         MI_newFile.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         MI_newFile.setText("New File");
@@ -227,6 +249,8 @@ public class ventanaAdmin extends javax.swing.JFrame {
 
         MB_window.setText("Window");
 
+        MB_clear.setText("Clear");
+
         MI_clearLine.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         MI_clearLine.setText("Clear Command Line");
         MI_clearLine.addActionListener(new java.awt.event.ActionListener() {
@@ -234,11 +258,16 @@ public class ventanaAdmin extends javax.swing.JFrame {
                 MI_clearLineActionPerformed(evt);
             }
         });
-        MB_window.add(MI_clearLine);
+        MB_clear.add(MI_clearLine);
 
         MI_clearTable.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         MI_clearTable.setText("Clear Table");
-        MB_window.add(MI_clearTable);
+        MB_clear.add(MI_clearTable);
+
+        MB_window.add(MB_clear);
+
+        MI_RefreshTree.setText("Refresh Tree");
+        MB_window.add(MI_RefreshTree);
 
         jMenuBar1.add(MB_window);
 
@@ -282,13 +311,8 @@ public class ventanaAdmin extends javax.swing.JFrame {
         TF_comandText.setText("");
     }//GEN-LAST:event_MI_clearLineActionPerformed
 
-    private void TF_comandTextKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TF_comandTextKeyPressed
-
-    }//GEN-LAST:event_TF_comandTextKeyPressed
-
     private void LB_enterbuttonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_LB_enterbuttonMouseClicked
         try {
-            System.out.println("click");
             leerCommand();
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -309,6 +333,14 @@ public class ventanaAdmin extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this,
                 "");
     }//GEN-LAST:event_MI_commandInfoActionPerformed
+
+    private void MB_FileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MB_FileActionPerformed
+        try {
+            craerArchivo();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }//GEN-LAST:event_MB_FileActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -353,8 +385,10 @@ public class ventanaAdmin extends javax.swing.JFrame {
 
         if (nomArchivo[0].equals("./create")) {
             if (nomArchivo[2].equals("-single")) {
-                command = true;
-                System.out.println("encontro single");
+                String[] txt = nomArchivo[2].split(".");
+                if (txt[1].equals("txt")) {
+                    command = true;
+                }   
             }
         }
         if (command) {
@@ -388,7 +422,10 @@ public class ventanaAdmin extends javax.swing.JFrame {
     }
 
     public void cargarArhcivo() {
+        DefaultTreeModel modelo = (DefaultTreeModel) JT_arhcivos.getModel();
+        DefaultMutableTreeNode directory = (DefaultMutableTreeNode) modelo.getRoot();
 
+//        DefaultMutableTreeNode archivoSelc = (DefaultMutableTreeNode) JT_arhcivos.getSelectionPath().getLastPathComponent();
     }
 
     public void craerArchivo() throws IOException {
@@ -399,6 +436,23 @@ public class ventanaAdmin extends javax.swing.JFrame {
             File nvArchivo = new File("./Directory/" + nomArchivo[1]);
             fw = new FileWriter(nvArchivo);
             bw = new BufferedWriter(fw);
+
+            for (int i = 0; this.jTable1.getRowCount() < 10; i++) {
+                for (int j = 0; j < jTable1.getColumnCount(); j++) {
+                    if (modeloTable.getValueAt(i, j) != null) {
+                        bw.write(modeloTable.getValueAt(i, j).toString() + ",");
+                    }
+                    bw.newLine();
+                }
+            }
+            bw.flush();
+
+            DefaultTreeModel modelo = (DefaultTreeModel) JT_arhcivos.getModel();
+            DefaultMutableTreeNode directory = (DefaultMutableTreeNode) modelo.getRoot();
+            
+            DefaultMutableTreeNode archivo = new DefaultMutableTreeNode((File)nvArchivo);
+            directory.add(archivo);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -408,6 +462,7 @@ public class ventanaAdmin extends javax.swing.JFrame {
 
     public void clearTable() {
 
+        jTable1.setModel(new DefaultTableModel(new String[]{"id", "nombre", "category", "price", "aisle", "bin",}, 100));
     }
 
     public void refreshTree() {
@@ -423,17 +478,22 @@ public class ventanaAdmin extends javax.swing.JFrame {
     private javax.swing.JLabel LB_enterbutton;
     private javax.swing.JLabel LB_enterbutton1;
     private javax.swing.JMenu MB_File;
+    private javax.swing.JMenu MB_clear;
     private javax.swing.JMenu MB_help;
     private javax.swing.JMenu MB_window;
     private javax.swing.JMenuItem MI_ImportFile;
+    private javax.swing.JMenuItem MI_RefreshTree;
     private javax.swing.JMenuItem MI_clearLine;
     private javax.swing.JMenuItem MI_clearTable;
     private javax.swing.JMenuItem MI_commandInfo;
     private javax.swing.JMenuItem MI_newFile;
     private javax.swing.JMenuItem MI_prodInfo;
+    private javax.swing.JPopupMenu PM_opc;
     private javax.swing.JPanel PN_principal;
     private javax.swing.JTextField TF_comandText;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
