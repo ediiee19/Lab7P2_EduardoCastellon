@@ -211,15 +211,7 @@ public class ventanaAdmin extends javax.swing.JFrame {
             new String [] {
                 "id", "name", "category", "price", "aisle", "bin"
             }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class, java.lang.Double.class, java.lang.String.class, java.lang.Integer.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
+        ));
         jTable1.setToolTipText("");
         jTable1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jTable1.setShowGrid(true);
@@ -239,10 +231,20 @@ public class ventanaAdmin extends javax.swing.JFrame {
 
         MI_newFile.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         MI_newFile.setText("New File");
+        MI_newFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MI_newFileActionPerformed(evt);
+            }
+        });
         MB_File.add(MI_newFile);
 
         MI_ImportFile.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         MI_ImportFile.setText("Import File");
+        MI_ImportFile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MI_ImportFileActionPerformed(evt);
+            }
+        });
         MB_File.add(MI_ImportFile);
 
         jMenuBar1.add(MB_File);
@@ -336,11 +338,23 @@ public class ventanaAdmin extends javax.swing.JFrame {
 
     private void MB_FileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MB_FileActionPerformed
         try {
-            craerArchivo();
+            crearArchivo();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
     }//GEN-LAST:event_MB_FileActionPerformed
+
+    private void MI_newFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MI_newFileActionPerformed
+        try {
+            crearArchivo();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }//GEN-LAST:event_MI_newFileActionPerformed
+
+    private void MI_ImportFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MI_ImportFileActionPerformed
+        cargarArhcivo();
+    }//GEN-LAST:event_MI_ImportFileActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -388,11 +402,11 @@ public class ventanaAdmin extends javax.swing.JFrame {
                 String[] txt = nomArchivo[2].split(".");
                 if (txt[1].equals("txt")) {
                     command = true;
-                }   
+                }
             }
         }
         if (command) {
-            craerArchivo();
+            crearArchivo();
             TF_comandText.setText("");
         }
 
@@ -428,7 +442,7 @@ public class ventanaAdmin extends javax.swing.JFrame {
 //        DefaultMutableTreeNode archivoSelc = (DefaultMutableTreeNode) JT_arhcivos.getSelectionPath().getLastPathComponent();
     }
 
-    public void craerArchivo() throws IOException {
+    public void crearArchivo() throws IOException {
         String[] nomArchivo = TF_comandText.getText().split(" ");
         FileWriter fw = null;
         BufferedWriter bw = null;
@@ -447,12 +461,6 @@ public class ventanaAdmin extends javax.swing.JFrame {
             }
             bw.flush();
 
-            DefaultTreeModel modelo = (DefaultTreeModel) JT_arhcivos.getModel();
-            DefaultMutableTreeNode directory = (DefaultMutableTreeNode) modelo.getRoot();
-            
-            DefaultMutableTreeNode archivo = new DefaultMutableTreeNode((File)nvArchivo);
-            directory.add(archivo);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -467,9 +475,18 @@ public class ventanaAdmin extends javax.swing.JFrame {
 
     public void refreshTree() {
 
-        DefaultTreeModel model = (DefaultTreeModel) JT_arhcivos.getModel();
-        DefaultMutableTreeNode directory = (DefaultMutableTreeNode) model.getRoot();
+        DefaultTreeModel modelo = (DefaultTreeModel) JT_arhcivos.getModel();
+        DefaultMutableTreeNode directory = (DefaultMutableTreeNode) modelo.getRoot();
 
+        File directorio = new File(".");
+        File[] arhcivos = directorio.listFiles();
+
+        for (int i = 0; i < arhcivos.length; i++) {
+            if (arhcivos[i].getName().endsWith(".txt")) {
+                DefaultMutableTreeNode nvArchivo = new (DefaultMutableTreeNode)arhcivos[i];
+            directory.add(nvArchivo);
+            }      
+        }
     }
 
 
